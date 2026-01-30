@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Jan 2026 pada 05.58
+-- Waktu pembuatan: 30 Jan 2026 pada 05.01
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -85,7 +85,6 @@ CREATE TABLE `pendaftaran` (
   `file_kesediaan_pembimbing` varchar(255) DEFAULT NULL,
   `file_kesediaan_praktik` varchar(255) DEFAULT NULL,
   `file_proposal` varchar(255) DEFAULT NULL,
-  `status` enum('sudah_diverifikasi','belum_diverifikasi') NOT NULL DEFAULT 'belum_diverifikasi',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -94,8 +93,8 @@ CREATE TABLE `pendaftaran` (
 -- Dumping data untuk tabel `pendaftaran`
 --
 
-INSERT INTO `pendaftaran` (`pendaftar_id`, `user_id`, `nama_pendaftar`, `judul`, `nama_dosen`, `pembimbing_lapangan`, `no_telp`, `file_kesediaan_pembimbing`, `file_kesediaan_praktik`, `file_proposal`, `status_pendaftaran`, `created_at`, `updated_at`) VALUES
-(1, 1, 'farhan', 'suki liar mengejar abi yg terjatuh', 'Dr. Ahmad Fauzi', 'dr. tirta', '0895365996602', 'uploads/1769659012_kb_CV DHIA MAULIDIAH .pdf', 'uploads/1769659012_kp_Daftar_Pustaka_Revisi_Fenanda.pdf', 'uploads/1769659012_Daftar_Pustaka_Revisi.pdf', 'diajukan', '2026-01-29 03:56:52', '2026-01-29 03:56:52');
+INSERT INTO `pendaftaran` (`pendaftar_id`, `user_id`, `nama_pendaftar`, `judul`, `nama_dosen`, `pembimbing_lapangan`, `no_telp`, `file_kesediaan_pembimbing`, `file_kesediaan_praktik`, `file_proposal`, `created_at`, `updated_at`) VALUES
+(1, 1, 'farhan', 'suki liar mengejar abi yg terjatuh', 'Dr. Ahmad Fauzi', 'dr. tirta', '0895365996602', 'uploads/1769659012_kb_CV DHIA MAULIDIAH .pdf', 'uploads/1769659012_kp_Daftar_Pustaka_Revisi_Fenanda.pdf', 'uploads/1769659012_Daftar_Pustaka_Revisi.pdf', '2026-01-29 03:56:52', '2026-01-29 03:56:52');
 
 -- --------------------------------------------------------
 
@@ -115,6 +114,13 @@ CREATE TABLE `penilaian` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `penilaian`
+--
+
+INSERT INTO `penilaian` (`nilai_id`, `pendaftar_id`, `nilai_pembimbing1`, `nilai_pembimbing2`, `nilai_penguji1`, `nilai_penguji2`, `nilai_akhir`, `created_at`, `updated_at`) VALUES
+(1, 1, 83, 89, 87, 67, 326, '2026-01-29 09:44:14', '2026-01-29 09:44:14');
+
 -- --------------------------------------------------------
 
 --
@@ -126,7 +132,6 @@ CREATE TABLE `penjadwalan` (
   `pendaftaran_id` int(11) NOT NULL,
   `penguji_1` varchar(100) DEFAULT NULL,
   `penguji_2` varchar(100) DEFAULT NULL,
-  `status` enum('sudah_diverifikasi','belum_diverifikasi') NOT NULL DEFAULT 'belum_diverifikasi',
   `tanggal_sidang` date DEFAULT NULL,
   `jam_sidang` time DEFAULT NULL,
   `link_zoom` varchar(255) DEFAULT NULL,
@@ -138,8 +143,8 @@ CREATE TABLE `penjadwalan` (
 -- Dumping data untuk tabel `penjadwalan`
 --
 
-INSERT INTO `penjadwalan` (`penjadwalan_id`, `pendaftaran_id`, `penguji_1`, `penguji_2`, `status_sidang`, `tanggal_sidang`, `jam_sidang`, `link_zoom`, `created_at`, `updated_at`) VALUES
-(1, 1, 'dr sui', 'dr liar', 'terjadwal', '2026-01-29', '00:00:00', 'aowdmahdaodhaoisnd', '2026-01-29 04:12:05', '2026-01-29 04:42:38');
+INSERT INTO `penjadwalan` (`penjadwalan_id`, `pendaftaran_id`, `penguji_1`, `penguji_2`, `tanggal_sidang`, `jam_sidang`, `link_zoom`, `created_at`, `updated_at`) VALUES
+(1, 1, 'dr sui', 'dr liar', '2026-01-29', '00:00:00', 'aowdmahdaodhaoisnd', '2026-01-29 04:12:05', '2026-01-29 04:42:38');
 
 -- --------------------------------------------------------
 
@@ -160,6 +165,23 @@ CREATE TABLE `settings` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `sidang_akhir`
+--
+
+CREATE TABLE `sidang_akhir` (
+  `sidang_akhir_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `file_laporan_akhir` varchar(255) NOT NULL,
+  `file_loa_publikasi` varchar(255) DEFAULT NULL,
+  `tanggal_pengajuan` date NOT NULL,
+  `tanggal_sidang` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `user`
 --
 
@@ -171,7 +193,7 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `bidang_keahlian` varchar(100) NOT NULL,
   `no_hp` varchar(20) NOT NULL,
-  `status` enum('sudah_diverifikasi','belum_diverifikasi') NOT NULL DEFAULT 'belum_diverifikasi',
+  `status` enum('terverifikasi','tidak_terverifikasi') NOT NULL DEFAULT 'tidak_terverifikasi',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -181,7 +203,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `email`, `nama_lengkap`, `nrp`, `password`, `bidang_keahlian`, `no_hp`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'farhantegar75@gmail.com', 'farhan', '123456789', 'vian', 'suki liar', '0895365996602', 'belum_diverifikasi', '2026-01-29 03:43:09', '2026-01-29 03:43:09');
+(1, 'farhantegar75@gmail.com', 'farhan', '123456789', 'vian', 'suki liar', '0895365996602', '', '2026-01-29 03:43:09', '2026-01-29 03:43:09');
 
 --
 -- Indexes for dumped tables
@@ -206,7 +228,6 @@ ALTER TABLE `dosen`
 ALTER TABLE `pendaftaran`
   ADD PRIMARY KEY (`pendaftar_id`),
   ADD KEY `user_id` (`user_id`);
-  ADD KEY `status` (`status`);
 
 --
 -- Indeks untuk tabel `penilaian`
@@ -221,7 +242,6 @@ ALTER TABLE `penilaian`
 ALTER TABLE `penjadwalan`
   ADD PRIMARY KEY (`penjadwalan_id`),
   ADD KEY `pendaftaran_id` (`pendaftaran_id`);
-  ADD KEY `status` (`status`);
 
 --
 -- Indeks untuk tabel `settings`
@@ -229,6 +249,13 @@ ALTER TABLE `penjadwalan`
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `setting_key` (`setting_key`);
+
+--
+-- Indeks untuk tabel `sidang_akhir`
+--
+ALTER TABLE `sidang_akhir`
+  ADD PRIMARY KEY (`sidang_akhir_id`),
+  ADD KEY `fk_sidang_user` (`user_id`);
 
 --
 -- Indeks untuk tabel `user`
@@ -264,7 +291,7 @@ ALTER TABLE `pendaftaran`
 -- AUTO_INCREMENT untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
-  MODIFY `nilai_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `nilai_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `penjadwalan`
@@ -277,6 +304,12 @@ ALTER TABLE `penjadwalan`
 --
 ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `sidang_akhir`
+--
+ALTER TABLE `sidang_akhir`
+  MODIFY `sidang_akhir_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
@@ -305,6 +338,12 @@ ALTER TABLE `penilaian`
 --
 ALTER TABLE `penjadwalan`
   ADD CONSTRAINT `fk_penjadwalan_pendaftaran` FOREIGN KEY (`pendaftaran_id`) REFERENCES `pendaftaran` (`pendaftar_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `sidang_akhir`
+--
+ALTER TABLE `sidang_akhir`
+  ADD CONSTRAINT `fk_sidang_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

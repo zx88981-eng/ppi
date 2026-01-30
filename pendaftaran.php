@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file_proposal_path = 'uploads/' . basename($dest);
         }
 
-        $stmt = $mysqli->prepare('INSERT INTO pendaftaran (user_id, nama_pendaftar, judul, nama_dosen, pembimbing_lapangan, no_telp, file_kesediaan_pembimbing, file_kesediaan_praktik, file_proposal, status_pendaftaran) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "diajukan")');
+        $stmt = $mysqli->prepare('INSERT INTO pendaftaran (user_id, nama_pendaftar, judul, nama_dosen, pembimbing_lapangan, no_telp, file_kesediaan_pembimbing, file_kesediaan_praktik, file_proposal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->bind_param('issssssss', $user_id, $nama, $judul, $nama_dosen, $pembimbing_lapangan, $no_telp, $file_kesediaan_pembimbing, $file_kesediaan_praktik, $file_proposal_path);
         if ($stmt->execute()) {
             header('Location: tunggu.php');

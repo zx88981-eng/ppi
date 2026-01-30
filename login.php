@@ -30,11 +30,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['user_name'] = $row['nama_lengkap'];
             $_SESSION['user_status'] = $row['status'];
+            
             // Redirect berdasarkan status verifikasi
-            if ($row['status'] === 'sudah_diverifikasi') {
+            if ($row['status'] === 'terverifikasi') {
                 header('Location: final.php');
             } else {
-                header('Location: pendaftaran.php');
+                // Cek apakah user sudah melakukan pendaftaran
+                $check_stmt = $mysqli->prepare('SELECT pendaftar_id FROM pendaftaran WHERE user_id = ? LIMIT 1');
+                $check_stmt->bind_param('i', $row['user_id']);
+                $check_stmt->execute();
+                $check_res = $check_stmt->get_result();
+                $has_pendaftaran = $check_res && $check_res->fetch_assoc();
+                
+                if ($has_pendaftaran) {
+                    header('Location: tunggu.php');
+                } else {
+                    header('Location: pendaftaran.php');
+                }
             }
             exit;
         }
